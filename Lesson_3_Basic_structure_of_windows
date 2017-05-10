@@ -1,0 +1,52 @@
+#Overview
+
+When the power button is pressed on a computer a signal is sent to the motherboard telling it to start cycling power from the power supply to all the different parts that are connected to it. The Power supply will then perform a test itself while powering on to ensure everything is in working order, followed by the BIOS that is installed onto a read only chip located on the motherboard will check to see what hardware is connected while verifying that everything is in working order. It will then attempt to load devices in the already configured order which typically has hard drives listed first, followed by CDs and then USBs. Typically these devices will have an OS installed onto them or will be setup with an installer so that an operating system can be installed. We shall pick up from the situation in which the hard drive is loaded first and it has a windows OS installed, so the following is the process it goes through in order and the end result starting from after the BIOS has loaded the hard drive and started reading whats on it from the beginning of it. 
+
+#Taking Control from the BIOS
+
+To begin when an Windows Operating System is first started/being loaded by the BIOS the hard drive that it is on will have already been partitioned (divided up into different sections) and have a file system setup on it, all of which were created/setup during installation of the OS. So the BIOS will find the first partition(section) of the hard drive that is in use and will hand over control to the portion of the OS located there (it finds it through the use of the master boot record which is code that keeps track of how the hard drive is divided up).
+
+#Choosing Your OS
+
+Now that the Windows OS is in control it will first check a file called boot.ini to verify where/what it should boot from because while windows is the primary OS located on the primary partition you could have other operating systems installed so instead of assuming you want it just because its the primary OS. It will give you the option of loading one of the available OS from one of the available hard drives, it found out this information by checking the boot.ini file for all available hard drives and Operating Systems. Once the Operating System you want to load has been verified control will be given to Ntdetect.com
+
+#Initial Hardware Detection/Situational Awareness
+
+Control is given over to Ntdetect.com which will communicate with the BIOS to obtain the time, date, a list of all connected hardware and how to do simple communications with each piece of hardware.  Now that it knows all the available hardware it will give control over to the kernel which will be named ntoskrnl.exe at this point in time
+
+#Kernel takes control for more nuanced hardware control
+
+First thing the kernel does is start up HAL which is a program named Hardware abstraction layer which is a middle man that translates what hardware and software says so that they can understand each other. Next it sets up a process that will manage memory, afterwards it creates a process manager so that it can keep track of all running processes and threads (the actions they intend to perform) before creating a process named idle that will give birth to and manage all other processes. Lastly the kernel will start up the Session manager process, wait for a little while to ensure it doesn't quickly turnoff/go down then it hands over control t the session manager (also known as SMSS)
+
+#Settings are configured and initialized
+
+Session manager will setup registry keys with each having its own associated value/setting it controls and is controlled by. Session manager will then start up the registry so that the different keys ensure their values are in sync with the settings that will be implemented on the windows machine. Since the settings that will be used for the next user session (time a user/human logs into the machine) have been setup and started control will be given to winlogon.
+
+#Graphics are setup
+
+Winlogon will ensure that the session this a user will logon to will have a desktop background and it will also decide what dll/program/software to use to show the windows logon dialog box. That is the thing that prompts you for Username and Password, by default windows will use msgina.dll which is a graphical identification and authentication dll/program/software (Its a dll but for all intents and purposes you can just consider it a program that doesn't run on its on it just provides a service to other things that start it up/access it). After the window and desktop a user will see when they login is setup, winlogon starts up the service control manager (scm)  process which will check to see what needs to be automatically started when the system boots up.
+
+#User is prompted for Login information 
+
+Now winlogon will wait for user credentials to be entered into the dialog box that will appear after it has loaded up msgina.dll or whatever it is using to create the login prompt (dialog box). Once a username and password is entered winlogon will ask lsass.exe (local security authority subsystem) if it matches a previously configured username/password combo. If the correct login information was entered winlogon will pass control over to userinit.exe.
+
+#The users graphical interface is started
+
+Userinit.exe will start up a shell with the already determined desktop background, displayed in the already windows operating systems window. From this shell a user will be able to click on the programs they want to run (firefox, chrome, games and etc....)
+
+#Now that you are logged in the background tasks take effect
+
+Once a user is logged in and everything is started up one of the first things that will happen is that windows will begin logging everything that happens into the Application, system or security log based off of what type of action it saw occuring (account creation, service startup, failed logon and etc....). These logs can be viewed by using `event viewer` which will allow you to filter, search and just browse through all of the logs that are created. 
+
+#And there shall be a graphical user interface  (explorer.exe)
+
+The process that is responsible for managing all the graphical user interfaces you interact with to run program is called explorer.exe. It will be started once a user has authenticated and will be responsible for managing all the different interfaces, windows and gui's (graphical user interfaces) that a user opens, it will depend on other programs off course with svchost running in the background interacting with the dll's so that other processes can just obtain whatever functionality those dll's provide by asking the svchost program to do it for them.
+
+
+#Device Drivers also known as translators for the language hardware speaks in
+
+Hal (hardware abstraction layer) will also be running and will be trying to interact with the software on behalf of the hardware and vice versa though it will require properly updated device drivers so that it is using accurate information to communicate with each individual piece of hardware. You can check on the status of the   device drivers for things like if they are up to date, missing or corrupted by opening up `device manger`. Updating drivers is as simple as right clicking choosing update device driver while connected to the internet though in the past it was a bit more difficult and you would have to go to the hardware producers website to download it  and run it.
+
+#Conclusion
+
+While there are multiple parts involved in using an operating system and these parts change depending on which version you are currently using this serves as a quick guide to understanding the basic layout of a windows operating system.

@@ -1,0 +1,99 @@
+#Introduction 
+
+When you are managing a system there are a fair number of things you will have to do and yes some of these things need to be done when it comes to windows administration but is typically the job of a domain controller since doing it for individual windows hosts is not a basic task. We shall cover the things a person will do when they are managing their linux system, and to start it off listed below is most of the basic things you will need to do.
+
+#Typical task
+>Adding new users
+
+
+>Doing backups
+
+
+>Restoring backups
+
+
+>Installing programs and operating systems updates
+
+
+>Freeing up disk space
+
+
+>Rebooting the system after a crash
+
+
+>Finding the reason behind sudden program crashes
+
+
+#Initial things to keep in mind
+
+Before you perform any action you should plan out what you will do before you do it since you want to make sure you can do it efficiently and effectively. If you are going to change a configuration file make sure you have a way to reverse any changes you plan to implement which the best way I have found is by making a read only copy of it and adding .dist0/.back0/.bck0 to the end so that you know not only is it a backup but which backup it is(the first(0) second (1) and etc ...). Also ensure that you keep a copy of these backup somewhere they will not be accidentally deleted, keeping in mind that places /tmp are emptied between restarts. Next after you have made your backup if possible you should test out the changes you want to make in a virtual machine or test machine. Even if you cannot you should slowly implement the changes so that you are able to better track what effect each change has, which has the side benefit of allowing you to rollback/revert/undo any harmful changes and just keep those that work. 
+
+#How to add a user 
+details used to make this user
+>username: mary
+
+
+>Full name: Mary Jo
+
+
+>Home dir: /home/mary
+
+
+>default shell: korn
+
+
+>expiration date for login: 1 may 2016
+
+
+Command
+>useradd -d /home/mary -s /bin/korn -e 05/01/2015 mary -c "Mary Jo"
+
+explanation of command
+>	-d 
+
+
+>		home directory
+
+
+>	-s 
+
+
+>		shell
+
+
+>	-e 
+
+
+>		expiration date 
+
+
+>	mary
+
+
+>		username which will be only thing without something directly before it
+
+
+>	-c
+
+
+>		Comment attached to account, in this case its the user's full name
+
+#Understanding backups
+
+Things happens, files get corrupted, images are accidentally deleted and because of this if you do not have a copy saved somewhere then you are in for a bad time. This is why you should also create a copy of any configuration file before you change it so that you can easily revert your changes, you will typically backup things in Linux by either copying with `cp` or archiving with `tar`,`gzip`, `bunzip` and `unzip`. Also ensure you move the copies to a remote storage device because the whole point of having them is so if anything happens to that file/machine you do not lose anything. Typically you will want to archive the backup using one of the mentioned tools so that they take up space since there will normally be a limit to how much storage space you will have dedicated to backups. Copy is normally used to create backups of a limited number of files and is useful if you just need to quickly create a copy that you either doesn't take up much space naturally or will only be around for a short while (just to test out a change or two). When it is time to reimplement your backup if you only copied it all you will have to do is mv the copy to the place the original is at, you do this because you are trying to undo the changes that where made to the original so you will just replace it. Now if you archived the files to save space you will need to use the archiving tools counterpart that does the extraction (`unzip`, `gunzip`, `bunzip`), except tar which has both built into it you just have to change the options you run it with. Once the files have been turned back into their original forms/size you can just replace the originals with them if the originals are still there, sometimes the original will have already been lost/corrupted/deleted and that is why they won't be there to replace so you will just move the copies where the originals were. Just remember when creating backups and replacing originals with backups that if you need to save space archive the files and if possible create multiple backups one for each serious change so you can undo a single change instead of all of them. 
+
+#Installing packages and checking for updates
+
+Installing software in Linux is a simple enough affair if you are connected to the internet because you just have to install the package (code/program and its dependencies). You will typically do this by using `yum` or `apt-get` which are package managers (named this because they manage the deletion, installation and updating software) though which one you have will depend on which distribution of Linux you have. By default there will be a table/list of sites the package managers will go visit to check for the software you ask them to install, if the software is not located here you will have to specify the site that has it or have already downloaded the packages that contains your desired software and its dependencies. Both package managing software will also check the trusted sites they know of for updates to the programs/packages they have already downloaded when they have been told to or if you set them up to auto update. The syntax to install packages is `apt-get install software` or `yum install software` replace software with the recognized name of the program you want to install also the syntax to update packages is `apt-get update ` or `yum update` which will try to update all programs that it is currently able to. 
+ 
+#Tracking disk usage and freeing up space
+
+Keeping track of what is taking up the most space on your computer and how much free space you have is something you should routinely do to manage things you rarely use. Once you know things like I have a 500 GB hard drive with 100 GB of free space because I have 350 GB of videos (50 GB of other stuff), it will be easier to figure out what decisions need to be made to save space. Decisions to just maximize your current space which would be something like I will archive these movies or decisions to just get dedicated storage will start being made. With the kind of knowledge and decision I just gave a short example of you can get the most use out of the storage you have available or can buy more storage so that you have a more comfortable/organized computer experience. Things like `baobab` a graphical way to track disk usage and  `df -h` which is a command line tool for tracking disk usage are some tools you can use to do this. 
+
+#Retracing the actions of a program to find out why it crashed
+
+One last thing worth mentioning is that sometimes you might want/need to figure out why a program stopped working. You do not have to be a programmer to figure it out though the difficulty changes depending on the application/Program you are looking at. Sometimes you can just check /var/log/messages or /var/log/crashes and grep for your program to see if there is an entry for it, look for things that happened near the same time as it (within a few seconds) and try to figure out if the crashed program depended on any of those things listed near it. If that does not work you will have to keep track of what programs are running before, during and after the program you cared about crashed. The last method you can use though is to use `strace command` only replace command with the program or command that starts up the program you care about. You will need to look for lines that say open or write because on these lines will be listed the full paths of the things this programs relies on and once you know what these things are you can just go to their location. Then through the use of google you can verify if they are setup/contain what they should because if they look strange or different then that could be why the program crashed. If you want to go more in depth than this you will probably have to use a debugger like `gdb` but that will require more knowledge than what is covered in this lesson. 
+
+#Conclusion
+
+Now you should be aware of a few best practices like making sure you can revert/undo any changes you make in case they make things worse and a few methods you should be able to use to find out why a program crashed or stopped. Some other things worth noting is that you can use `man -k keyword` to find any command on the system that contains keyword in their description, this will help you find commands with the ability to do whatever task you need. Keep in mind that there is more than what I named to maintaining the multiple different systems you could implement. In closing just remember google, man pages, forums, chat rooms and the documentation created by the creator of whatever software you must take care of will be the key to successfully managing that software. 

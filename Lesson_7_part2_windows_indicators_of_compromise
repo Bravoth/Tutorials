@@ -1,0 +1,25 @@
+#Introduction
+
+The following is a list of things that you should be worried about if you see it in your windows computers.
+
+#List
+
+1. Processes that do not show up in most process lists
+2. Mispelled programs (example: svhost.exe)
+3. Anything set to automatically start 
+>Some things are normal but all should be verified
+
+
+4. Files in the prefetch that were not created from commands you ran
+5. Folders in program files and program files x86 that you and approved users did not install
+6. Miscanalaneous files located in directories they do not belong (example: 13sd321ad4.exe located inside of c:\program files\Chrome is suspicious)
+7. mimikatz.exe
+8. Program packers like upx
+9. Accounts being created with administrator credentials 
+10. Services being created when a program was not installed
+11. Failed login attempts (example: 2 failed logon attempts at midnight when you live alone)
+12. Alternate Data streams (example: normal_file.pdf:badfile.exe)
+    a file being hidden by being attached to another is strange and most likely malicious
+13. Programs that are listening/waiting for connections
+14. Anything initiating connections to remote machines (Some companies like microsoft will setup software that will automatically connect back to them, that is normal but the thing you are really looking for is anything not owned by big names like that which is still initiating connections.)
+15.

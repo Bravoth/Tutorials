@@ -1,0 +1,119 @@
+#Introduction
+
+As before with windows when you turn on a computer the motherboard starts supplying power to the different connected devices. It does check the integrity of the different devices to ensure it will not start any faulty ones while also creating a device tree that will list every single connected device. Lastly the BIOS will hand over control to the first active/primary partition found on the hard drive that has the Nix operating system installed which will also be where the grub is located which means that the grub will be given control. 
+
+#The Grand Unified bootloader (GRUB) takes complete control 
+
+The grub is responsible for loading everything that is involved in the operation/running of an operating system with the added ability to be changed/interacted with during any portion of the boot process. Thanks to this capability the grub makes it possible to select different kernel modules to load while the system is on and modify the initial RAM disk (initrd) . The ability to load kernel modules is an important part of linux because it makes it where instead of having to completely restart the computer system like in windows in order for most pieces of hardware attached to the motherboard after it has been booted to be recognized. You are able to just find, install and start up/load  the kernel module which will act like a device driver that allows software to interact with pieces of hardware. Since you can interact with the grub/bootloader while it is loading you can just transfer/upload the necessary kernel module to the hard drive and add it to the list of kernel modules to load making it where now you can use that piece of hardware. 
+
+#Initial RAM disk (initrd) which allows you to run commands during the boot process
+
+The grub is able to interact with and modify the initrd which is a small collection of directories and executables  attached to the main/core part of the linux kernel so that it is loaded before the main file system which is stored on other parts of the hard drive. Initrd is what you will normally interact with/use when you interrupt part of the boot process so that you can interact with the grub and make it do something like say load a kernel module. You see initrd is located so early in the boot process because by having its folders/directories and files/executables separate from the main file system and loaded so early in the booting process you can transfer data/information/files/executables to it and actually run them. insmod is one of the executables located inside of the initrd and insmod is what actually loads the kernel modules and is one of a collection of executables located inside of the initrd that you can use to perform certain actions before the Linux operating system is fully started up.
+
+#Kernel
+
+Once the grub was given control and assuming you didn't interupt the boot process by pressing a button like ctrl and c at the same time so that you could interact with the grub it will have started loading the kernel and all the necessary kernel modules. The grub will also begin loading/mounting the root/main file system and will start up the init process which will make sure that the system is placed into and stays at a certain run level/state. When a linux operating system is loaded/started it will be placed into a run level with each run level having a set/predefined collection of programs, services and modules that it will contain/make use of (example: the module/device driver for a mouse is not loaded in certain run levels).
+
+#Initializing a Run Levels
+
+The init process which is the first process started will by default load/start up run level 6 which will load all the necessary software/services for network communications, ensure that multiple users can log into this machine at one time and will load X-windows display manager (thats why this level is named x11). X-windows display manager is a basic gui framework that ensures when a user logs in they will be greeted with a graphical desktop along with graphical representations of available programs. While the exact number of run levels can change depending on the exact version/distribution of linux you are using the following is the general outline of all run levels and their use. 
+
+    0 - Halt Mode                   
+>All processes will be stopped 
+
+
+    1 - Single User mode        
+>Only necessary programs will be started
+>No programs that allow/provide networking capabilities will be implemented
+>Mainly used to perform administrative services that require it will not connect to any remote machines in any way
+   
+
+    2 - Multi user mode
+>Allows multiple users to log on
+>Limited networking capabilities
+>For allowing remote administration of a system
+
+
+    3 - Full multi user mode
+>Full networking capabilities
+>Allows multiple users to log on 
+>Mainly used so that people can access and use this machine both locally and remotely, but the difference being that they do not need a graphical user interface to be started for them so it isn't started by default
+
+
+    4 - User defined mode
+>Setup by a human
+>Only starts up the programs/services that it is explicitly told to
+>Used to create an extremely customized experienced for when the modifier of this run level accesses this system
+
+
+    5 - X11
+>Starts up all network services/programs
+>Allows for multiple users to log in 
+>Loads a predetermined generic/basic windows display manager which is a graphical desktop that gives users the ability to click to open programs, browse the web and things that users normally do with a computer.
+
+
+    6 - Reboot mode
+>Terminates/stops all processes
+>Restarts the system
+
+#Logging in
+
+Now that the system is started and a run level has been chosen all that is left is for you to enter in your login information which will be compared against a protected file that contains all your user information including your home directory(the folder your desktop will show you), the shell you will use (the command prompt/terminal you will use to enter commands/request the system do certain actions with) and the password which will be encrypted but still matched against what you enter to ensure you enter the proper credentials. Once logged in you are free to use the programs you want just know that linux has a different file structure as shown below just remember everything starts at / .
+
+    /
+ >All the other directories and files are stored under this
+
+
+    /bin
+>System commands  (binaries, executables and etc) available to all users 
+
+
+    /dev
+>device files, Collection of files that have an associated piece of hardware that it is linked to
+
+
+    /etc
+>Computer specific configuration files
+>Programs started by init are decided here
+>what is started at each run level is located here
+>List of users, groups and a quick summary of their settings and passwords are located in a file here
+>The default run level is decided here
+
+
+    /home
+>User files
+
+
+    /lib
+>Programming libraries used by programs in /bin and /sbin
+
+
+    /mnt
+>temporary mounting point for removable media devices such as USBs, and CD-ROMs
+
+
+    /proc
+>Process and kernel status files
+>A file is created here to keep track of what programs are running
+
+
+    /root
+>The root/administrators home directory
+
+
+    /sbin
+>system administration binaries (executables)
+
+
+    /tmp
+>Folder for files that you don't want to keep for log
+>Things inside here will typcially be deleted when the system turns off
+
+
+    /var
+>Logs and received mail is stored here
+
+
+#Conclusion 
+
+This has been a general overview of how the Linux Operating System normally functions, while a lot of smaller details have been left out this will/was meant to give you a good understanding of what happens from the moment you press the power button until you enter your user credentials and become logged into this system.

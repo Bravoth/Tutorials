@@ -1,0 +1,70 @@
+#Introduction
+
+The Internet Engineering Tasks Force created documentation named Request For Comments so that the manner in which people made their computers communicate would match up. Without this kind of documentation setting a baseline it would be like trying to make Spanish speakers communicate with Japanese speakers. It could work but a lot of information would be lost in translation since they would have to mainly rely on things like body language. This guide will be about what happens when your computer attempts to connect to another machine. What follows 
+ 
+#Network Interface Cards/MACs 
+
+The first requirement for communicating across ethernet is having a Network interface card. This is because it is the main/easiest way for your computer to accept a connection from an ethernet's cables connector which tends to be called an RJ45. While that name is not accurate in all cases since sometimes the actual name of the piece you use to end/terminate a cable so that it can be plugged into the port/interface/opening located on a NIC is actually named something along the lines of 8P8C (8pins 8connections). Anyway in order to accept connections from these devices a NIC is connected to the computers motherboard. A NIC will have a Media Access control (MAC) address assigned/built into it by default with each vendor/manufacturer following a certain format/logic which allows people who see it to know who created it.  Hence why when looking at Network traffic people will look at the mac addresses header to see who made the device since things like routers will have one that points to cisco, juniper, etc as its maker. Having just a MAC address is not enough to communicate to other hosts on a network because the protocol used to transport messages/facilitate communications are all based around the Internet Protocol. 
+
+#Internet Protocol Addresses
+
+In order to obtain an IP address a computer must either be manually assigned one by a user or request one from a Dynamic Host Configuration Protocol server. There are two types of IP address, Public and Private with the difference being that Public addresses will be passed from one router to the next so that it will reach it's remote host (this process is also known as routing) while Private addresses will not be routed through the internet (the internet is basically a collection of routers connected to each other that send traffic/messages/information from one device to another). After obtaining an IP address a computer will also need to specify a default gateway which is the IP address of the routers interface that it can reach. Once this has been set the computer knows who to talk to in order to connect to machines that are not apart of their local network with local being everything that does not have a router between this host and it. Lastly this computer that wants to communicate with other machines must have a subnet mask which is basically a number that states how IP addresses are divided. In other words a subnett mask will be a number that states from this IP to that IP is one group and from that IP to those IPs is another group. The whole purpose of a subnet mask is for security so that you can section off addresses into groups that you can then implement policies on deciding what group can do what and who each group can talk to. Once an IP address, subnet mask and Default gateway is set the computer is ready to communicate to remote machines, all it has to do now is construct a packet that contains the destinations address and the message/info/data that it wants to transfer. 
+
+#TCP/IP model, That thing that quickly summarizes how network communications 
+
+Application
+>You clicked an Icon/Image to start up the program
+
+
+>An interface/graphical thing pops up after you click the programs icon 
+
+
+>This interface will be how you tell the program what you want for example when you type in a url into a browser like chrome to tell it you want to see what the url (example: www.google.com) has to offer 
+
+
+>The program behind this interface will know what kind of communications will need to be performed to complete this task 
+
+
+Transport
+
+
+>The requested action will be fulfilled by sending a  message/piece of information/data that the Application/program the user created the request through changes into a predetermined format. This will then be divided up into easier to handle/send segments with the source port(source socket) and destination port (destination socket) wrapped around each segment along with a sequence number. In order to ensure both sides agree on what sequence number to start at and ports to use an initial three part communication will happen to establish they are both willing to talk. This three part communication is called a three way handshake and consists of an initial message (SYN) to the target hosts stating I plan to use these ports and start at this number (Sequence number) which we will use to keep track of our messages. The remote host will then respond acknowledging that the request port (destination port/destination socket) and sequence number are allowed (SYN,ACK). Finally the host that started this communication will acknowledge that they have reached an agreement and it will actually start sending the message. 
+
+>A socket is created when a program needs to communication to a remote host, it will have a port number connected to it and said port number will have a service associated with it. If it is a well known/common port (1-1024) it will have an already decided service making use of it otherwise it will just be a service the program that started/created the socket is using to handle communications.
+
+>next an initial sequence number will be determined so that the local and remote machine can keep track of the order their communications are occurring in by starting at the Sequence number and then increment that number while also confirming the sequence number of the last thing they received (This is called an acknowledgement number). 
+
+>Lastly a flag will be set that will describe the purpose of this communication (example: SYN is an initial request for the synchronization of sequence numbers, SYNACK is an acknowledgment and approval of said sequence number and PSH is a notification of the computers intention to send data.)
+
+    
+Internet Layer 
+
+
+>Before the message/communication leaves the location machine it will have a source IP address (the local machine) and a destination IP address (the remote machine) attached to it. At this point the segmented message that has an IP address is now refered to as a packet. 
+
+>The action requested of the program will either already have an IP address (or web address that will be converted/translated into an ip address) configured so that anytime someone asks it to do/show something it already knows who/what IP address to go to. Otherwise the requester will also need to specify the host/IP address that is capable of fulfilling it's request because nothing will be sent if an IP address has not been set already. These IP addresses will be used in both the initial three way handshake and in the actual communication since IP addresses are what computers use to identify each other when they have a router in between them. 
+
+
+>Next there will be a checksum, which is basically a hash of the entire packet used to verify at any point in the communication that this piece of traffic/packet has not been corrupted or changed.
+
+
+Network Layer
+
+>Now that we have a message/piece of information/data that has had the necessary information attached to it, the computer can now send across an ethernet cable. It will be sent through said cable to a switch and/or router which will ensure that it arrives at the destination while deciding the best/quickest/most efficient method/path to send it. Once it reaches its target the remote machine will make use of the fact that messages/data/information is always packaged in the same predetermined way based off of what the requested action is to open it up and see what was requested of it. Afterwards It will reattach the addresses, ports, flags and checksums switching the placement of the addresses and ports though because it is now sending it (there will not be a  handshake done more than once for each set of communications). On a closing note for the transport portion of this TCP/IP model we explained how TCP (transmission Control Protocol) worked which is concerned with ensuring everything arrives so it has safeguards for that but the other option that could have been used for sending messages/information is UDP (uniform datagram protocol). UDP does not make use of sequence number or initial handshakes it just sends things with an IP address and port wrapped around it. Also in order to verify that an Ethernet cable/connection is actually working/functioning an ICMP (internet control message protocol) will be sent to verify the continued existence of machines and functionality of connections. 
+
+
+#Switches the first device you will normally go through in a decent sized network 
+
+In order to ensure routers do not have too great of a workload switches are implemented so that if the destination of a communication is nearby like say in the same building it can just be sent through a switch instead of adding more work for the router that deals with all the outside communications. Switches route traffic based on mac addresses, you see they have a table that tracks the interface each MAC address comes from and remembers so in the future they can just look at the MAC address that is attached to a packet by default to tell where it came from and who it is going to. While switches do route based on MAC address computers do not participate in more detailed communication which computers typically use for the few protocols that are fine with just using MAC addresses. The way a switch implements security is by separating Interfaces into vlans (virtual local area networks)  so that they cannot communicate to each other without leaving this switch and going through a port specifically dedicated for vlan to vlan conversions. They can also block access to a port/interface based solely on the MAC address it sees in that particular communication. Anyway if the destination is not connected to one of the switches it will be forwarded to the default gateway (hence the name because its the default/normal way out of the network) which is the interface that is facing the host that is apart of the local network. 
+
+#Routers
+
+Send traffic to places based on their IP addresses and knows where IPs are located at by using a thing called a routing protocol which syncs it up with other routers so it has a general idea of where certain IP ranges are. Security for these device are implemented through the use of Access list (ACL) which filter traffic/ensure that certain traffic gets sent while others do not by paying attention to the IP addresses (source/destination), ports(source/destination) and connection states (established vs initial). Routers will not send a private IP address outside of what it knows to be its internal network which is why Network Address translations are implemented making it where when a host with a private IP address approaches the router the router already has a list of Public IPs it can loan out to them so they can talk to remote hosts. They can also send traffic from one vlan to the next using just one interface, but for DNS translations most routers must send them to a server who does it (there are a few main dns servers the rest of them rely on). Lastly to ensure switches are not confused by MAC addresses that come from remote machines routers will replace foreign source MAC address that enter their network with their own so that the switch knows who to send it to when it is time for the machine to reply. 
+
+#DNS
+
+When an address made up of words is given instead of an IP address which is made up of numbers a Domain Name server must be talked to so that it can translate the words into an IP address. 
+
+#Conclusion
+
+The things above are the basic structure of a network communication, which start at a mac being assigned by default, ip address being manually/automatically assigned along with a subnet mask and a default gateway so that things/messages/information/data can leave the local network. Then a message being crafted and then packed/stored inside of an informational packet that contains the senders address, the destination address and instructions on how to handle the packet when it is sent. Afterwards it is sent through a switch and if it is local the switch sends it to the target host but if it is remote it is sent to a router that will send it to the target host/machine which it learned about thanks to the information obtained by its routing protocol. The information on the packet ensures that both sides know who they are talking to and how to continue communications. Networking at its
